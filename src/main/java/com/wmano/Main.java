@@ -16,14 +16,13 @@ public class Main {
             if (name.endsWith("_html") && f.isDirectory()){
                 StringBuilder htmlElement = new StringBuilder();
                 htmlElement.append(createHtmlElement(f, ""));
-                System.out.println(htmlElement);
+//                System.out.println(htmlElement);
                 String htmlTemplate = createHtmlCode(htmlElement);
                 Path outputFile = Paths.get(name.replace("_", "."));
                 Files.writeString(outputFile, htmlTemplate);
-                System.out.println("Fertig mit datei: " + name);
+//                System.out.println("Fertig mit datei: " + name);
             }
         }
-
     }
 
     private static String createHtmlCode(StringBuilder htmlElement) {
@@ -102,12 +101,12 @@ public class Main {
                             var differenzTage = Math.floor(aktuelleZeitMillis / 86400000);
                             var psalmNumberToday = (differenzTage % 20) + 1;
                             document.getElementById('psalmNumberToday').textContent = psalmNumberToday;
-                
+    
                             document.getElementById('colorToggleButton').addEventListener('click', function() {
                                 document.body.classList.toggle('dark-mode');
                             });
                         });
-                
+    
                         function toggleText(id) {
                             var text = document.getElementById(id);
                             if (text.style.display === 'none') {
@@ -132,21 +131,20 @@ public class Main {
     private static String createHtmlElement(File f, String title) throws IOException {
         StringBuilder htmlElement = new StringBuilder();
         if(!title.isEmpty()) {
-            String beautifiedTitle = title.replace(".html", "")
-                    .replace("_", " ")
-                    .replaceAll("\\(\\d+\\)", "");
-            htmlElement.append("<h2 class=\"toggle-title\">").append(beautifiedTitle).append("</h2>\n");
-            htmlElement.append("<div class=\"content\">\n");
             if (f.isDirectory()) {
+                createUpperPartOfHtmlFolderStructure(title, htmlElement);
+                System.out.println("Folder with name: " + title);
                 for (File f_ : Objects.requireNonNull(f.listFiles())) {
                     htmlElement.append(createHtmlElement(f_, f_.getName()));
                 }
+                closeHtmlFolderStructur(htmlElement);
             } else {
+                System.out.println("File with name: " + title);
+                createUpperPartOfHtmlStructure(title, htmlElement);
                 htmlElement.append(Files.readString(f.toPath()));
                 htmlElement.append("\n");
+                closeHtmlStructur(htmlElement);
             }
-            htmlElement.append("<div>\n");
-            htmlElement.append("<hr />\n");
         } else {
             if (f.isDirectory()) {
                 for (File f_ : Objects.requireNonNull(f.listFiles())) {
@@ -157,6 +155,34 @@ public class Main {
         return htmlElement.toString();
     }
 
+    private static void closeHtmlStructur(StringBuilder htmlElement) {
+        htmlElement.append("</p>\n");
+        htmlElement.append("<hr class=\"zweiter\">\n");
+    }
 
+    private static void createUpperPartOfHtmlStructure(String title, StringBuilder htmlElement) {
+        if (title != null && !title.isEmpty()) {
+            String beautifiedTitle = title.replace(".html", "");
+            beautifiedTitle = beautifiedTitle.split("___")[1];
+            String textId = String.valueOf(beautifiedTitle.hashCode());
+            htmlElement.append("<h1 onclick=\"toggleText('").append(textId).append("')\">").append(beautifiedTitle).append("</h1>");
+            htmlElement.append("<p id=\"").append(textId).append("\" style=\"display: none;\">");
+        }
+    }
+
+    private static void closeHtmlFolderStructur(StringBuilder htmlElement) {
+        htmlElement.append("</div>\n");
+        htmlElement.append("<hr class=\"zweiter\">\n");
+    }
+
+    private static void createUpperPartOfHtmlFolderStructure(String title, StringBuilder htmlElement) {
+        if (title != null && !title.isEmpty()) {
+            String beautifiedTitle = title.replace(".html", "");
+            beautifiedTitle = beautifiedTitle.split("___")[1];
+            String textId = String.valueOf(beautifiedTitle.hashCode());
+            htmlElement.append("<h1 onclick=\"toggleText('").append(textId).append("')\">").append(beautifiedTitle).append("</h1>");
+            htmlElement.append("<div id=\"").append(textId).append("\" style=\"display: none;\">");
+        }
+    }
 
 }
