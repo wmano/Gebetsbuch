@@ -95,18 +95,18 @@ public class Main {
                             color: white;
                         }
                     </style>
+                </head>
+                <body>
+                    <div class="top-bar">
+                        <button id="colorToggleButton" class="toggle-button">Toggle Color</button>
+                    </div>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
-                            var aktuelleZeitMillis = Date.now();
-                            var differenzTage = Math.floor(aktuelleZeitMillis / 86400000);
-                            var psalmNumberToday = (differenzTage % 20) + 1;
-                            document.getElementById('psalmNumberToday').textContent = psalmNumberToday;
-    
                             document.getElementById('colorToggleButton').addEventListener('click', function() {
                                 document.body.classList.toggle('dark-mode');
                             });
                         });
-    
+
                         function toggleText(id) {
                             var text = document.getElementById(id);
                             if (text.style.display === 'none') {
@@ -115,12 +115,10 @@ public class Main {
                                 text.style.display = 'none';
                             }
                         }
+
+                        var button = document.getElementById('colorToggleButton');
+                        console.log(button);
                     </script>
-                </head>
-                <body>
-                    <div class="top-bar">
-                        <button id="colorToggleButton" class="toggle-button">Toggle Color</button>
-                    </div>
         """ + htmlElement +
         """
                 </body>
